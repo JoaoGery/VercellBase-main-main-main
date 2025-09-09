@@ -25,7 +25,7 @@ export default class GenerosController {
 
         this.find = async (req, res) => {
             const filtro = req.body.filtro;
-            const resultado = await Genero.find({
+                    const resultado = await Genero.find({
                 nome: { $regex: filtro, $options: "i" }
             })
             res.render(caminhoBase + 'lst', { Generos: resultado })

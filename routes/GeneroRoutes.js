@@ -10,7 +10,7 @@ const caminhobase = 'genero/'
 router.get('/' + caminhobase + 'add', controle.openAdd);
 router.post('/' + caminhobase + 'add', controle.add);
 router.get('/' + caminhobase + 'lst', controle.list);
-
+router.post('/' + caminhobase + 'lst', controle.find);
 // Rotas para editar e deletar
 router.get('/' + caminhobase + 'edt/:id', controle.openEdt);
 router.post('/' + caminhobase + 'edt/:id', controle.edt);
