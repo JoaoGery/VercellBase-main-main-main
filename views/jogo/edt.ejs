@@ -1,0 +1,55 @@
+<%-include('../cabecalho.ejs')%>
+<h1>Editar Jogo</h1>
+<div>
+    <a href="/jogo/lst">Listar</a>
+</div>
+<div>
+    <form method="post">
+        <input type="hidden" name="id" value="<%= jogo._id %>">
+
+        <label>Nome:</label>
+        <input type="text" name="nome" value="<%= jogo.nome %>" required />
+
+        <label>Ano:</label>
+        <input type="number" name="ano" value="<%= jogo.ano %>" required min="1950" max="2100" />
+
+        <label>Gênero:</label>
+        <select name="genero" required>
+            <option value="">Selecione</option>
+            <option value="MOBA" <%= jogo.genero === 'MOBA' ? 'selected' : '' %>>MOBA</option>
+            <option value="FPS" <%= jogo.genero === 'FPS' ? 'selected' : '' %>>FPS</option>
+            <option value="BATTLE ROYALE" <%= jogo.genero === 'BATTLE ROYALE' ? 'selected' : '' %>>BATTLE ROYALE</option>
+        </select>
+
+        <label>Desenvolvedor:</label>
+        <input type="text" name="desenvolvedor" value="<%= jogo.desenvolvedor %>" required />
+
+        <label>Classificação:</label>
+        <select name="classificacao" required>
+            <option value="">Selecione</option>
+            <option value="Livre" <%= jogo.classificacao === 'Livre' ? 'selected' : '' %>>Livre</option>
+            <option value="10+" <%= jogo.classificacao === '10+' ? 'selected' : '' %>>10+</option>
+            <option value="12+" <%= jogo.classificacao === '12+' ? 'selected' : '' %>>12+</option>
+            <option value="14+" <%= jogo.classificacao === '14+' ? 'selected' : '' %>>14+</option>
+            <option value="16+" <%= jogo.classificacao === '16+' ? 'selected' : '' %>>16+</option>
+            <option value="18+" <%= jogo.classificacao === '18+' ? 'selected' : '' %>>18+</option>
+        </select>
+
+        <label>Plataforma:</label>
+        <select name="plataforma" required>
+            <option value="">Selecione</option>
+            <option value="PC" <%= jogo.plataforma === 'PC' ? 'selected' : '' %>>PC</option>
+            <option value="Playstation" <%= jogo.plataforma === 'Playstation' ? 'selected' : '' %>>Playstation</option>
+            <option value="Xbox" <%= jogo.plataforma === 'Xbox' ? 'selected' : '' %>>Xbox</option>
+            <option value="Nintendo Switch" <%= jogo.plataforma === 'Nintendo Switch' ? 'selected' : '' %>>Nintendo Switch</option>
+            <option value="Mobile" <%= jogo.plataforma === 'Mobile' ? 'selected' : '' %>>Mobile</option>
+            <option value="Multi-plataforma" <%= jogo.plataforma === 'Multi-plataforma' ? 'selected' : '' %>>Multi-plataforma</option>
+        </select>
+
+        <label>Preço:</label>
+        <input type="number" name="preco" value="<%= jogo.preco %>" required step="0.01" min="0" />
+
+        <button type="submit">Salvar</button>
+    </form>
+</div>
+<%-include('../rodape.ejs')%>

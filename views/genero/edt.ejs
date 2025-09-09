@@ -1,0 +1,19 @@
+<%-include('../cabecalho.ejs')%>
+<h1>Editar Gênero</h1>
+<div>
+    <a href="/genero/lst">Listar</a>
+</div>
+<div>
+    <form method="post">
+        <input type="hidden" name="id" value="<%= genero._id %>"><br>
+        <label>Nome:</label>
+        <select name="nome" required>
+            <option value="">Selecione</option>
+            <option value="MOBA" <%= genero.nome === 'MOBA' ? 'selected' : '' %>>MOBA</option>
+            <option value="FPS" <%= genero.nome === 'FPS' ? 'selected' : '' %>>FPS</option>
+            <option value="BATTLE ROYALE" <%= genero.nome === 'BATTLE ROYALE' ? 'selected' : '' %>>BATTLE ROYALE</option>
+        </select><br>
+        <button type="submit">Salvar</button>
+    </form>
+</div>
+<%-include('../rodape.ejs')%>

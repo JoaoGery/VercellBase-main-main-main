@@ -1,0 +1,18 @@
+<%-include('../cabecalho.ejs')%>
+<h1>Adicionar Gênero</h1>
+<div>
+    <a href="/genero/lst">Listar</a>
+</div>
+<div>
+    <form method="post">
+        <label>Nome:</label>
+        <select name="nome" required>
+            <option value="">Selecione</option>
+            <option value="MOBA">MOBA</option>
+            <option value="FPS">FPS</option>
+            <option value="BATTLE ROYALE">BATTLE ROYALE</option>
+        </select>
+        <button type="submit">Cadastrar</button>
+    </form>
+</div>
+<%-include('../rodape.ejs')%>

@@ -1,0 +1,34 @@
+<%-include('../cabecalho.ejs')%>
+<h1>Torneios</h1>
+<div>
+    <form action="" method="post">
+        <input type="text" name="filtro" placeholder="Digite o nome do torneio">
+        <button type="submit">Pesquisar</button>
+    </form>
+</div>
+<a href="/torneio/add">+ Torneio</a>
+<table>
+    <tr>
+        <th>Nome</th>
+        <th>Jogo</th>
+        <th>Período</th>
+        <th>Premiação</th>
+        <th>Status</th>
+        <th>Ações</th>
+    </tr>
+    <% for (const { _id, nome, jogo, periodo, premiacao, status } of Torneios) { %>
+    <tr>
+        <td><%= nome %></td>
+        <!-- Alteração feita aqui: -->
+        <td><%= jogo %></td>
+        <td><%= new Date(periodo.dataInicio).toLocaleDateString('pt-BR') %> - <%= new Date(periodo.dataFim).toLocaleDateString('pt-BR') %></td>
+        <td>R$ <%= Number(premiacao).toFixed(2) %></td>
+        <td><%= status %></td>
+        <td>
+            <a href="/torneio/edt/<%= _id %>">Editar</a>
+            <a href="/torneio/del/<%= _id %>">Excluir</a>
+        </td>
+    </tr>
+    <% } %>
+</table>
+<%-include('../rodape.ejs')%>

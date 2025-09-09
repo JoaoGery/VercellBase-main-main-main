@@ -1,0 +1,53 @@
+<%-include('../cabecalho.ejs')%>
+<h1>Adicionar Jogo</h1>
+<div>
+    <a href="/jogo/lst">Listar</a>
+</div>
+<div>
+    <form method="post">
+        <label>Nome:</label>
+        <input type="text" name="nome" required />
+
+        <label>Ano:</label>
+        <input type="number" name="ano" required min="1950" max="2100" />
+
+        <label>Gênero:</label>
+        <select name="genero" required>
+            <option value="">Selecione</option>
+            <option value="MOBA">MOBA</option>
+            <option value="FPS">FPS</option>
+            <option value="BATTLE ROYALE">BATTLE ROYALE</option>
+        </select>
+
+        <label>Desenvolvedor:</label>
+        <input type="text" name="desenvolvedor" required />
+
+        <label>Classificação:</label>
+        <select name="classificacao" required>
+            <option value="">Selecione</option>
+            <option value="Livre">Livre</option>
+            <option value="10+">10+</option>
+            <option value="12+">12+</option>
+            <option value="14+">14+</option>
+            <option value="16+">16+</option>
+            <option value="18+">18+</option>
+        </select>
+
+        <label>Plataforma:</label>
+        <select name="plataforma" required>
+            <option value="">Selecione</option>
+            <option value="PC">PC</option>
+            <option value="Playstation">Playstation</option>
+            <option value="Xbox">Xbox</option>
+            <option value="Nintendo Switch">Nintendo Switch</option>
+            <option value="Mobile">Mobile</option>
+            <option value="Multi-plataforma">Multi-plataforma</option>
+        </select>
+
+        <label>Preço:</label>
+        <input type="number" name="preco" required step="0.01" min="0" />
+
+        <button type="submit">Cadastrar</button>
+    </form>
+</div>
+<%-include('../rodape.ejs')%>
