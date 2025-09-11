@@ -7,6 +7,8 @@ import cursoRoutes from './routes/CursoRoutes.js'; // rotas externas
 import generoRoutes from './routes/GeneroRoutes.js'; // rotas externas
 import jogoRoutes from './routes/JogoRoutes.js'; // rotas externas
 import torneioRoutes from './routes/TorneioRoutes.js'; // rotas externas
+import equipamentoRoutes from './routes/EquipamentoRoutes.js';
+import marcaRoutes from './routes/MarcaRoutes.js';
 
 
 const app = express();
@@ -30,6 +32,9 @@ app.use(generoRoutes)
 app.use(routes)
 app.use(jogoRoutes)
 app.use(torneioRoutes)
+app.use(equipamentoRoutes)
+app.use(marcaRoutes)
+
 app.listen(3001)
 // Exporta o handler compatível com Vercel
 export default app;

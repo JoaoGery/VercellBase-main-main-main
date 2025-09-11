@@ -1,0 +1,22 @@
+<%- include('../cabecalho.ejs') %>
+<h1>Adicionar Marca</h1>
+
+<div>
+    <a href="/marca/lst">Listar</a>
+</div>
+
+<div>
+    <form method="post">
+        <label>Nome:</label>
+        <input type="text" name="nome" required>
+        <br>
+
+        <label>País:</label>
+        <input type="text" name="pais" required>
+        <br><br>
+
+        <button type="submit">Salvar</button>
+    </form>
+</div>
+
+<%- include('../rodape.ejs') %>

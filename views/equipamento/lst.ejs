@@ -1,0 +1,44 @@
+<%-include('../cabecalho.ejs')%>
+<h1>Equipamentos</h1>
+
+<div>
+    <form action="" method="post">
+        <input type="text" name="filtro" placeholder="Digite o nome do equipamento">
+        <button type="submit">Pesquisar</button>
+    </form>
+</div>
+
+<a href="/equipamento/add">+ Equipamento</a>
+
+<table border="1" cellspacing="0" cellpadding="5">
+    <tr>
+        <th>Nome</th>
+        <th>Tipo</th>
+        <th>Marca</th>
+        <th>Preço</th>
+        <th>Ano</th>
+        <th>Ações</th>
+    </tr>
+
+    <% if (Equipamentos && Equipamentos.length > 0) { %>
+        <% for (const { _id, nome, tipo, marca, preco, ano } of Equipamentos) { %>
+            <tr>
+                <td><%= nome %></td>
+                <td><%= tipo %></td>
+                <td><%= marca %></td>
+                <td>R$ <%= preco ? Number(preco).toFixed(2) : '0.00' %></td>
+                <td><%= ano %></td>
+                <td>
+                    <a href="/equipamento/edt/<%= _id %>">Editar</a> |
+                    <a href="/equipamento/del/<%= _id %>" onclick="return confirm('Deseja realmente excluir este equipamento?')">Excluir</a>
+                </td>
+            </tr>
+        <% } %>
+    <% } else { %>
+        <tr>
+            <td colspan="6">Nenhum equipamento encontrado.</td>
+        </tr>
+    <% } %>
+</table>
+
+<%-include('../rodape.ejs')%>

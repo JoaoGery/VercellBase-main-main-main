@@ -1,0 +1,38 @@
+<%- include('../cabecalho.ejs') %>
+<h1>Marcas</h1>
+
+<div>
+    <form action="" method="post">
+        <input type="text" name="filtro" placeholder="Digite nome ou país">
+        <button type="submit">Pesquisar</button>
+    </form>
+</div>
+
+<a href="/marca/add">+ Marca</a>
+
+<table border="1" cellspacing="0" cellpadding="5">
+    <tr>
+        <th>Nome</th>
+        <th>País</th>
+        <th>Ações</th>
+    </tr>
+
+    <% if (Marcas && Marcas.length > 0) { %>
+        <% Marcas.forEach(marca => { %>
+            <tr>
+                <td><%= marca.nome %></td>
+                <td><%= marca.pais %></td>
+                <td>
+                    <a href="/marca/edt/<%= marca._id %>">Editar</a> |
+                    <a href="/marca/del/<%= marca._id %>" onclick="return confirm('Deseja realmente excluir esta marca?')">Excluir</a>
+                </td>
+            </tr>
+        <% }) %>
+    <% } else { %>
+        <tr>
+            <td colspan="3">Nenhuma marca encontrada.</td>
+        </tr>
+    <% } %>
+</table>
+
+<%- include('../rodape.ejs') %>

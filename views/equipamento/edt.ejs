@@ -1,0 +1,39 @@
+<%-include('../cabecalho.ejs')%>
+<h1>Editar Equipamento</h1>
+<div>
+    <a href="/equipamento/lst">Listar</a>
+</div>
+<div>
+    <form method="post">
+        <input type="hidden" name="id" value="<%= equipamento._id %>"><br>
+
+        <label>Nome:</label>
+        <input type="text" name="nome" value="<%= equipamento.nome %>" required>
+        <br>
+
+        <label>Tipo:</label>
+        <select name="tipo" required>
+            <option value="">Selecione</option>
+            <option value="Notebook" <%= equipamento.tipo === 'Notebook' ? 'selected' : '' %>>Notebook</option>
+            <option value="Desktop" <%= equipamento.tipo === 'Desktop' ? 'selected' : '' %>>Desktop</option>
+            <option value="Console" <%= equipamento.tipo === 'Console' ? 'selected' : '' %>>Console</option>
+            <option value="Acessório" <%= equipamento.tipo === 'Acessório' ? 'selected' : '' %>>Acessório</option>
+        </select>
+        <br>
+
+        <label>Marca:</label>
+        <input type="text" name="marca" value="<%= equipamento.marca %>" required>
+        <br>
+
+        <label>Preço:</label>
+        <input type="number" name="preco" min="0" step="0.01" value="<%= equipamento.preco %>" required>
+        <br>
+
+        <label>Ano:</label>
+        <input type="number" name="ano" min="1900" max="<%= new Date().getFullYear() %>" value="<%= equipamento.ano %>" required>
+        <br><br>
+
+        <button type="submit">Salvar</button>
+    </form>
+</div>
+<%-include('../rodape.ejs')%>
