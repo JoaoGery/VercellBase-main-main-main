@@ -18,7 +18,8 @@ export default class EquipamentosController {
                     tipo: req.body.tipo,
                     marca: req.body.marca,
                     preco: req.body.preco,
-                    ano: req.body.ano
+                    ano: req.body.ano,
+                    imagem: req.file ? req.file.buffer : undefined
                 });
                 res.redirect('/' + this.caminhoBase + 'lst');
             } catch (err) {
@@ -67,7 +68,17 @@ export default class EquipamentosController {
         // edita um equipamento
         this.edt = async (req, res) => {
             try {
-                await Equipamento.findByIdAndUpdate(req.params.id, req.body);
+                const updateData = {
+                    nome: req.body.nome,
+                    tipo: req.body.tipo,
+                    marca: req.body.marca,
+                    preco: req.body.preco,
+                    ano: req.body.ano
+                };
+                if (req.file) {
+                    updateData.imagem = req.file.buffer;
+                }
+                await Equipamento.findByIdAndUpdate(req.params.id, updateData);
                 res.redirect('/' + this.caminhoBase + 'lst');
             } catch (err) {
                 console.error("Erro ao editar equipamento:", err);

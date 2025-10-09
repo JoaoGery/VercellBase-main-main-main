@@ -10,6 +10,9 @@ const Marca = conexao.Schema({
         type: String,
         required: true,
         trim: true
+    },
+    imagem: {
+        type: Buffer // campo para armazenar dados binários (ex: imagem)
     }
 })
 

@@ -6,7 +6,7 @@
 </div>
 
 <div>
-    <form method="post">
+    <form action="/marca/edt/<%= marca._id %>" method="POST" enctype="multipart/form-data">
         <input type="hidden" name="id" value="<%= marca._id %>"><br>
 
         <label>Nome:</label>
@@ -15,7 +15,12 @@
 
         <label>País:</label>
         <input type="text" name="pais" value="<%= marca.pais %>" required>
-        <br><br>
+        <br>
+
+        
+        <label for="imagem">Imagem:</label>
+        <input type="file" name="imagem" id="imagem" accept="image/*" />
+        
 
         <button type="submit">Salvar</button>
     </form>

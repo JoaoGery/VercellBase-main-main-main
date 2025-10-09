@@ -4,7 +4,7 @@
     <a href="/equipamento/lst">Listar</a>
 </div>
 <div>
-    <form method="post">
+    <form action="/equipamento/edt/<%= equipamento._id %>" method="POST" enctype="multipart/form-data">
         <input type="hidden" name="id" value="<%= equipamento._id %>"><br>
 
         <label>Nome:</label>
@@ -33,6 +33,10 @@
         <input type="number" name="ano" min="1900" max="<%= new Date().getFullYear() %>" value="<%= equipamento.ano %>" required>
         <br><br>
 
+        <label for="imagem">Imagem:</label>
+        <input type="file" name="imagem" id="imagem" accept="image/*" />
+        
+        
         <button type="submit">Salvar</button>
     </form>
 </div>

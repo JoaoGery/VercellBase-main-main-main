@@ -6,13 +6,17 @@
 </div>
 
 <div>
-    <form method="post">
+    <form action="/marca/add" method="POST" enctype="multipart/form-data">
         <label>Nome:</label>
         <input type="text" name="nome" required>
         <br>
 
         <label>País:</label>
         <input type="text" name="pais" required>
+        <br>
+
+        <label for="imagem">Imagem:</label>
+        <input type="file" name="imagem" id="imagem" accept="image/*" />
         <br><br>
 
         <button type="submit">Salvar</button>

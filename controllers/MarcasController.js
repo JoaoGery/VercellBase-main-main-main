@@ -14,7 +14,8 @@ export default class MarcasController {
         this.add = async (req, res) => {
             await Marca.create({
                 nome: req.body.nome,
-                pais: req.body.pais
+                pais: req.body.pais,
+                imagem: req.file ? req.file.buffer : undefined
             })
             res.redirect('/' + this.caminhoBase + 'lst')
         }
@@ -46,7 +47,14 @@ export default class MarcasController {
 
         // Edita a marca
         this.edt = async (req, res) => {
-            await Marca.findByIdAndUpdate(req.params.id, req.body)
+            const updateData = {
+                nome: req.body.nome,
+                pais: req.body.pais
+            }
+            if (req.file) {
+                updateData.imagem = req.file.buffer
+            }
+            await Marca.findByIdAndUpdate(req.params.id, updateData)
             res.redirect('/' + this.caminhoBase + 'lst')
         }
 

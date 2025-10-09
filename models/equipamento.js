@@ -23,6 +23,9 @@ const Equipamento = conexao.Schema({
         required: true,
         min: 1900,
         max: new Date().getFullYear()
+    },
+    imagem: {
+        type: Buffer // campo para armazenar dados binários (ex: imagem)
     }
 })
 

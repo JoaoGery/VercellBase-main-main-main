@@ -15,6 +15,7 @@
         <th>Nome</th>
         <th>País</th>
         <th>Ações</th>
+        <th>Imagem</th>
     </tr>
 
     <% if (Marcas && Marcas.length > 0) { %>
@@ -26,11 +27,18 @@
                     <a href="/marca/edt/<%= marca._id %>">Editar</a> |
                     <a href="/marca/del/<%= marca._id %>" onclick="return confirm('Deseja realmente excluir esta marca?')">Excluir</a>
                 </td>
+                <td>
+                    <% if (marca.imagem) { %>
+                        <img src="data:image/png;base64,<%= marca.imagem.toString('base64') %>" alt="Imagem" width="80" />
+                    <% } else { %>
+                        Sem imagem
+                    <% } %>
+                </td>
             </tr>
         <% }) %>
     <% } else { %>
         <tr>
-            <td colspan="3">Nenhuma marca encontrada.</td>
+            <td colspan="4">Nenhuma marca encontrada.</td>
         </tr>
     <% } %>
 </table>
