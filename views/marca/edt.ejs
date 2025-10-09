@@ -17,11 +17,13 @@
         <input type="text" name="pais" value="<%= marca.pais %>" required>
         <br>
 
-        
+        <% if (marca.imagem) { %>
+            <img src="data:image/jpeg;base64,<%= marca.imagem.toString('base64') %>" alt="Imagem atual" style="max-width:150px;"><br>
+        <% } %>
+
         <label for="imagem">Imagem:</label>
         <input type="file" name="imagem" id="imagem" accept="image/*" />
         
-
         <button type="submit">Salvar</button>
     </form>
 </div>
