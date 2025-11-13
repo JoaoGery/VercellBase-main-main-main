@@ -1,29 +1,358 @@
-<!--Cabeçalho-->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>sistema Exemplo</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <link rel="stylesheet" href="/css/style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Sistema de Aluguel de Carros</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+
+    body {
+      background-color:#f3f4f6;
+      color:#333;
+      line-height:1.6;
+    }
+
+    header {
+      background:#2d3748;
+      color:#fff;
+      padding:1rem 2rem;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      box-shadow:0 2px 8px rgba(0,0,0,0.1);
+      position:sticky;
+      top:0;
+      z-index:10;
+    }
+
+    header h1 {font-weight:600;font-size:1.4rem;}
+
+    nav ul {
+      display:flex;
+      list-style:none;
+      gap:1rem;
+    }
+
+    nav a {
+      color:#fff;
+      text-decoration:none;
+      font-weight:500;
+      transition:0.3s;
+    }
+
+    nav a:hover {color:#60a5fa;}
+
+    main {
+      padding:2rem;
+      max-width:1100px;
+      margin:0 auto;
+    }
+
+    .section {
+      display:none;
+      opacity:0;
+      transform:translateY(10px);
+      transition:all 0.3s ease;
+    }
+
+    .section.active {
+      display:block;
+      opacity:1;
+      transform:translateY(0);
+    }
+
+    form {
+      background:#fff;
+      padding:1.5rem;
+      border-radius:12px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.05);
+      margin-bottom:2rem;
+    }
+
+    .form-group {margin-bottom:1rem;}
+
+    label {display:block;font-weight:500;margin-bottom:0.4rem;}
+
+    input, select {
+      width:100%;
+      padding:0.6rem;
+      border-radius:8px;
+      border:1px solid #ccc;
+      transition:border-color 0.2s;
+    }
+
+    input:focus, select:focus {border-color:#3b82f6;outline:none;}
+
+    button {
+      border:none;
+      padding:0.6rem 1.2rem;
+      border-radius:8px;
+      font-weight:500;
+      cursor:pointer;
+      transition:background 0.3s,transform 0.2s;
+    }
+
+    button:hover {transform:translateY(-2px);}
+
+    .btn-add {background:#2563eb;color:#fff;}
+    .btn-add:hover {background:#1e40af;}
+    .btn-edit {background:#16a34a;color:#fff;}
+    .btn-edit:hover {background:#15803d;}
+    .btn-delete {background:#dc2626;color:#fff;}
+    .btn-delete:hover {background:#b91c1c;}
+
+    table {
+      width:100%;
+      border-collapse:collapse;
+      background:#fff;
+      border-radius:12px;
+      overflow:hidden;
+      box-shadow:0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    thead {background:#e5e7eb;}
+
+    th,td {
+      text-align:left;
+      padding:0.8rem 1rem;
+    }
+
+    tr:nth-child(even){background:#f9fafb;}
+
+    td img {
+      width:70px;
+      border-radius:6px;
+    }
+
+    .search-box {
+      display:flex;
+      justify-content:flex-end;
+      gap:8px;
+      margin-bottom:10px;
+    }
+
+    .search-box input {
+      width:200px;
+      padding:6px 8px;
+      border-radius:8px;
+      border:1px solid #ccc;
+    }
+
+    .btn-small {
+      padding:0.4rem 0.8rem;
+      font-size:0.9rem;
+      margin-right:4px;
+    }
+  </style>
 </head>
 <body>
-  
 
-  <div class="container">
-    <nav class="menu">
-      <ul>
-        <li><a href="/" class="btn"><i class="fa fa-home" ></i>&nbsp;Home</a></li>
-        <li><a href="/aluno/lst" class="btn">Aluno</a></li>
-         <li><a href="/curso/lst" class="btn">Curso</a></li>
-          <li><a href="/genero/lst" class="btn">Gênero</a></li>
-            <li><a href="/jogo/lst" class="btn">Jogo</a></li>
-              <li><a href="/torneio/lst" class="btn">Torneio</a></li>
-                <li><a href="/equipamento/lst" class="btn">Equipamento</a></li>
-                   <li><a href="/marca/lst" class="btn">Marca</a></li>
-               
-      </ul>
-    </nav>
+<header>
+  <h1>🚗 Sistema de Aluguel de Carros</h1>
+  <nav>
+    <ul>
+      <li><a href="#" onclick="showSection('carros')">Carros</a></li>
+      <li><a href="#" onclick="showSection('clientes')">Clientes</a></li>
+      <li><a href="#" onclick="showSection('reservas')">Reservas</a></li>
+      <li><a href="#" onclick="showSection('pagamentos')">Pagamentos</a></li>
+    </ul>
+  </nav>
+</header>
 
-  <!--Cabeçalho - Fim-->
+<main>
+  <!-- CARROS -->
+  <div id="carros" class="section active">
+    <h2>Gerenciar Carros</h2>
+    <form id="carro-form">
+      <div class="form-group"><label>Marca:</label><input type="text" name="marca" required></div>
+      <div class="form-group"><label>Modelo:</label><input type="text" name="modelo" required></div>
+      <div class="form-group"><label>Ano:</label><input type="number" name="ano" required></div>
+      <div class="form-group"><label>Placa:</label><input type="text" name="placa" required></div>
+      <div class="form-group"><label>Foto:</label><input type="file" name="foto" accept="image/*"></div>
+      <img id="preview" style="width:120px;border-radius:8px;margin-bottom:10px;display:none;">
+      <button type="submit" class="btn-add">Adicionar Carro</button>
+    </form>
+
+    <div class="search-box">
+      <input type="text" id="pesquisar-carro" placeholder="Pesquisar carro...">
+    </div>
+
+    <table>
+      <thead><tr><th>Foto</th><th>Marca</th><th>Modelo</th><th>Ano</th><th>Placa</th><th>Ações</th></tr></thead>
+      <tbody id="carro-list"></tbody>
+    </table>
+  </div>
+
+  <!-- CLIENTES -->
+  <div id="clientes" class="section">
+    <h2>Clientes</h2>
+    <form id="cliente-form">
+      <div class="form-group"><label>Nome:</label><input type="text" name="nome" required></div>
+      <div class="form-group"><label>Email:</label><input type="email" name="email" required></div>
+      <div class="form-group"><label>Telefone:</label><input type="text" name="telefone" required></div>
+      <button type="submit" class="btn-add">Adicionar Cliente</button>
+    </form>
+    <table>
+      <thead><tr><th>Nome</th><th>Email</th><th>Telefone</th><th>Ações</th></tr></thead>
+      <tbody id="cliente-list"></tbody>
+    </table>
+  </div>
+
+  <!-- RESERVAS -->
+  <div id="reservas" class="section">
+    <h2>Reservas</h2>
+    <form id="reserva-form">
+      <div class="form-group"><label>Carro:</label>
+        <select name="carro" required></select>
+      </div>
+      <div class="form-group"><label>Cliente:</label>
+        <select name="cliente" required></select>
+      </div>
+      <div class="form-group"><label>Data Início:</label><input type="date" name="inicio" required></div>
+      <div class="form-group"><label>Data Fim:</label><input type="date" name="fim" required></div>
+      <button type="submit" class="btn-add">Adicionar Reserva</button>
+    </form>
+    <table>
+      <thead><tr><th>Carro</th><th>Cliente</th><th>Início</th><th>Fim</th><th>Ações</th></tr></thead>
+      <tbody id="reserva-list"></tbody>
+    </table>
+  </div>
+
+  <!-- PAGAMENTOS -->
+  <div id="pagamentos" class="section">
+    <h2>Pagamentos</h2>
+    <form id="pagamento-form">
+      <div class="form-group"><label>Reserva:</label>
+        <select name="reserva" required></select>
+      </div>
+      <div class="form-group"><label>Valor (R$):</label><input type="text" name="valor" placeholder="Ex: 1500,50" required></div>
+      <div class="form-group"><label>Data:</label><input type="date" name="data" required></div>
+      <button type="submit" class="btn-add">Adicionar Pagamento</button>
+    </form>
+    <table>
+      <thead><tr><th>Reserva</th><th>Valor</th><th>Data</th><th>Ações</th></tr></thead>
+      <tbody id="pagamento-list"></tbody>
+    </table>
+  </div>
+</main>
+
+<script>
+function showSection(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+let carros=[], clientes=[], reservas=[], pagamentos=[];
+
+const carroList=document.getElementById("carro-list");
+const clienteList=document.getElementById("cliente-list");
+const reservaList=document.getElementById("reserva-list");
+const pagamentoList=document.getElementById("pagamento-list");
+
+document.querySelector('input[name="foto"]').addEventListener('change',function(e){
+  const img=document.getElementById('preview');
+  const file=e.target.files[0];
+  if(file){
+    const reader=new FileReader();
+    reader.onload=()=>{img.src=reader.result;img.style.display='block';};
+    reader.readAsDataURL(file);
+  }
+});
+
+// ======= CARROS =======
+document.getElementById("carro-form").addEventListener("submit",e=>{
+  e.preventDefault();
+  const fotoInput=e.target.foto.files[0];
+  const reader=new FileReader();
+  reader.onload=()=>{
+    carros.push({marca:e.target.marca.value,modelo:e.target.modelo.value,ano:e.target.ano.value,placa:e.target.placa.value,foto:reader.result});
+    e.target.reset();document.getElementById("preview").style.display='none';
+    atualizarTabelaCarros(); atualizarSelects();
+  };
+  if(fotoInput) reader.readAsDataURL(fotoInput);
+  else {carros.push({marca:e.target.marca.value,modelo:e.target.modelo.value,ano:e.target.ano.value,placa:e.target.placa.value,foto:''});atualizarTabelaCarros();atualizarSelects();}
+});
+
+function atualizarTabelaCarros(){
+  const filtro=document.getElementById('pesquisar-carro')?.value?.toLowerCase()||'';
+  carroList.innerHTML=carros.filter(c=>Object.values(c).some(v=>v.toString().toLowerCase().includes(filtro)))
+  .map((c,i)=>`<tr>
+    <td>${c.foto?`<img src="${c.foto}">`:'—'}</td>
+    <td>${c.marca}</td><td>${c.modelo}</td><td>${c.ano}</td><td>${c.placa}</td>
+    <td><button class="btn-small btn-edit" onclick="editarCarro(${i})">Editar</button><button class="btn-small btn-delete" onclick="removerCarro(${i})">Excluir</button></td>
+  </tr>`).join('');
+}
+
+document.getElementById('pesquisar-carro').addEventListener('input',atualizarTabelaCarros);
+
+function removerCarro(i){carros.splice(i,1);atualizarTabelaCarros();atualizarSelects();}
+function editarCarro(i){
+  const c=carros[i];
+  const f=document.getElementById("carro-form");
+  f.marca.value=c.marca;f.modelo.value=c.modelo;f.ano.value=c.ano;f.placa.value=c.placa;
+  carros.splice(i,1);
+  atualizarTabelaCarros();
+  atualizarSelects();
+}
+
+// ======= CLIENTES =======
+document.getElementById("cliente-form").addEventListener("submit",e=>{
+  e.preventDefault();
+  clientes.push({nome:e.target.nome.value,email:e.target.email.value,telefone:e.target.telefone.value});
+  e.target.reset();render(clientes,clienteList,['nome','email','telefone'],'cliente');atualizarSelects();
+});
+
+// ======= RESERVAS =======
+document.getElementById("reserva-form").addEventListener("submit",e=>{
+  e.preventDefault();
+  reservas.push({carro:e.target.carro.value,cliente:e.target.cliente.value,inicio:e.target.inicio.value,fim:e.target.fim.value});
+  e.target.reset();render(reservas,reservaList,['carro','cliente','inicio','fim'],'reserva');atualizarSelects();
+});
+
+// ======= PAGAMENTOS =======
+document.getElementById("pagamento-form").addEventListener("submit",e=>{
+  e.preventDefault();
+  const valorStr=e.target.valor.value.replace(',','.');
+  pagamentos.push({reserva:e.target.reserva.value,valor:parseFloat(valorStr).toFixed(2).replace('.',','),data:e.target.data.value});
+  e.target.reset();render(pagamentos,pagamentoList,['reserva','valor','data'],'pagamento');
+});
+
+function render(arr,tabela,campos,tipo){
+  tabela.innerHTML=arr.map((o,i)=>`<tr>
+    ${campos.map(c=>`<td>${o[c]}</td>`).join('')}
+    <td><button class="btn-small btn-edit" onclick="editar('${tipo}',${i})">Editar</button><button class="btn-small btn-delete" onclick="remover('${tipo}',${i})">Excluir</button></td>
+  </tr>`).join('');
+}
+
+function atualizarSelects(){
+  const carroSel=document.querySelector('#reserva-form select[name="carro"]');
+  carroSel.innerHTML=carros.map(c=>`<option>${c.marca} ${c.modelo} (${c.placa})</option>`).join('');
+  const clienteSel=document.querySelector('#reserva-form select[name="cliente"]');
+  clienteSel.innerHTML=clientes.map(c=>`<option>${c.nome}</option>`).join('');
+  const reservaSel=document.querySelector('#pagamento-form select[name="reserva"]');
+  reservaSel.innerHTML=reservas.map((r,i)=>`<option>Reserva ${i+1}: ${r.carro} - ${r.cliente}</option>`).join('');
+}
+
+window.remover=(tipo,i)=>{
+  if(tipo==='cliente'){clientes.splice(i,1);render(clientes,clienteList,['nome','email','telefone'],'cliente');}
+  if(tipo==='reserva'){reservas.splice(i,1);render(reservas,reservaList,['carro','cliente','inicio','fim'],'reserva');atualizarSelects();}
+  if(tipo==='pagamento'){pagamentos.splice(i,1);render(pagamentos,pagamentoList,['reserva','valor','data'],'pagamento');}
+};
+
+window.editar=(tipo,i)=>{
+  let item,form,arr,campos;
+  if(tipo==='cliente'){item=clientes[i];form=document.getElementById('cliente-form');arr=clientes;campos=['nome','email','telefone'];}
+  if(tipo==='reserva'){item=reservas[i];form=document.getElementById('reserva-form');arr=reservas;campos=['carro','cliente','inicio','fim'];}
+  if(tipo==='pagamento'){item=pagamentos[i];form=document.getElementById('pagamento-form');arr=pagamentos;campos=['reserva','valor','data'];}
+  campos.forEach(c=>form[c].value=item[c]);
+  arr.splice(i,1);
+};
+</script>
+</body>
+</html>
+
+
+
+

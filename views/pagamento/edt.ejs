@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Editar Pagamento</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <main class="container py-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0">Editar Pagamento</h1>
+            <a href="/pagamento" class="btn btn-outline-secondary">Voltar</a>
+        </div>
+
+        <% if (typeof errors !== 'undefined' && errors && errors.length) { %>
+            <div class="alert alert-danger">
+                <ul class="mb-0">
+                    <% errors.forEach(function(err){ %>
+                        <li><%= err.msg || err %></li>
+                    <% }) %>
+                </ul>
+            </div>
+        <% } %>
+
+        <form action="/pagamento/<%= pagamento && pagamento.id ? pagamento.id : '' %>?_method=PUT" method="POST" class="card p-4">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label for="nome" class="form-label">Nome</label>
+                    <input id="nome" name="nome" type="text" class="form-control" required
+                                 value="<%= pagamento ? (pagamento.nome || '') : '' %>">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="valor" class="form-label">Valor (R$)</label>
+                    <input id="valor" name="valor" type="number" step="0.01" min="0" class="form-control" required
+                                 value="<%= pagamento ? (pagamento.valor != null ? pagamento.valor : '') : '' %>">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="data" class="form-label">Data</label>
+                    <input id="data" name="data" type="date" class="form-control"
+                                 value="<%= pagamento && pagamento.data ? pagamento.data.toISOString().slice(0,10) : (new Date()).toISOString().slice(0,10) %>">
+                </div>
+
+                <div class="col-md-6">
+                    <label for="metodo" class="form-label">Método de Pagamento</label>
+                    <select id="metodo" name="metodo" class="form-select">
+                        <option value="">-- selecione --</option>
+                        <option value="cartao" <%= pagamento && pagamento.metodo === 'cartao' ? 'selected' : '' %>>Cartão</option>
+                        <option value="boleto" <%= pagamento && pagamento.metodo === 'boleto' ? 'selected' : '' %>>Boleto</option>
+                        <option value="pix" <%= pagamento && pagamento.metodo === 'pix' ? 'selected' : '' %>>PIX</option>
+                        <option value="transferencia" <%= pagamento && pagamento.metodo === 'transferencia' ? 'selected' : '' %>>Transferência</option>
+                        <option value="dinheiro" <%= pagamento && pagamento.metodo === 'dinheiro' ? 'selected' : '' %>>Dinheiro</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="status" class="form-label">Status</label>
+                    <select id="status" name="status" class="form-select">
+                        <option value="pendente" <%= pagamento && pagamento.status === 'pendente' ? 'selected' : '' %>>Pendente</option>
+                        <option value="pago" <%= pagamento && pagamento.status === 'pago' ? 'selected' : '' %>>Pago</option>
+                        <option value="cancelado" <%= pagamento && pagamento.status === 'cancelado' ? 'selected' : '' %>>Cancelado</option>
+                        <option value="estornado" <%= pagamento && pagamento.status === 'estornado' ? 'selected' : '' %>>Estornado</option>
+                    </select>
+                </div>
+
+                <div class="col-12">
+                    <label for="descricao" class="form-label">Descrição (opcional)</label>
+                    <textarea id="descricao" name="descricao" rows="3" class="form-control"><%= pagamento ? (pagamento.descricao || '') : '' %></textarea>
+                </div>
+
+                <div class="col-12 d-flex gap-2 justify-content-end">
+                    <a href="/pagamento" class="btn btn-outline-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-primary">Salvar alterações</button>
+                </div>
+            </div>
+        </form>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

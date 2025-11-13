@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Reservas</title>
+    <link rel="stylesheet" href="/public/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Lista de Reservas</h1>
+        
+        <% if (lista && lista.length > 0) { %>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Data</th>
+                        <th>Hora</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% lista.forEach(function(reserva) { %>
+                        <tr>
+                            <td><%= reserva.id %></td>
+                            <td><%= reserva.cliente %></td>
+                            <td><%= reserva.data %></td>
+                            <td><%= reserva.hora %></td>
+                            <td><%= reserva.status %></td>
+                            <td>
+                                <a href="/reserva/alterar/<%= reserva.id %>" class="btn-editar">Editar</a>
+                                <a href="/reserva/excluir/<%= reserva.id %>" class="btn-excluir">Excluir</a>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        <% } else { %>
+            <p>Nenhuma reserva encontrada.</p>
+        <% } %>
+        
+        <a href="/reserva/novo" class="btn-novo">Nova Reserva</a>
+    </div>
+</body>
+</html>

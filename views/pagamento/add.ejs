@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Adicionar pagamento</title>
+    <style>
+        body{font-family:Arial,Helvetica,sans-serif;margin:20px;background:#f7f7f7}
+        .card{background:#fff;padding:20px;border-radius:6px;max-width:700px;margin:0 auto;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+        .row{display:flex;gap:12px;flex-wrap:wrap}
+        .col{flex:1;min-width:160px}
+        label{display:block;font-weight:600;margin-bottom:6px;font-size:0.95rem}
+        input,select,textarea{width:100%;padding:8px 10px;border:1px solid #ccc;border-radius:4px;font-size:0.95rem}
+        textarea{min-height:100px;resize:vertical}
+        .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:12px}
+        .btn{padding:8px 14px;border-radius:4px;border:0;cursor:pointer;font-weight:600}
+        .btn-primary{background:#0070f3;color:#fff}
+        .btn-secondary{background:#e6e6e6;color:#111}
+        .alert{background:#ffe8e8;color:#8a1f1f;padding:10px;border-radius:4px;margin-bottom:12px}
+        .help{font-size:0.85rem;color:#666;margin-top:6px}
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Adicionar pagamento</h1>
+
+        <% if (typeof errors !== 'undefined' && errors && errors.length) { %>
+            <div class="alert">
+                <strong>Erros:</strong>
+                <ul>
+                    <% errors.forEach(function(err){ %>
+                        <li><%= err.msg || err %></li>
+                    <% }) %>
+                </ul>
+            </div>
+        <% } %>
+
+        <form action="/pagamento/add" method="POST" id="form-pagamento" novalidate>
+            <!-- exemplo: inserir token CSRF se necessário -->
+            <% if (typeof csrfToken !== 'undefined') { %>
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <% } %>
+
+            <div class="row">
+                <div class="col">
+                    <label for="valor">Valor (R$)</label>
+                    <input id="valor" name="valor" type="number" step="0.01" min="0" required
+                        value="<%= pagamento && pagamento.valor ? pagamento.valor : '' %>">
+                </div>
+
+                <div class="col">
+                    <label for="metodo">Método de pagamento</label>
+                    <select id="metodo" name="metodo" required>
+                        <option value="">Selecione</option>
+                        <option value="pix"   <%= pagamento && pagamento.metodo === 'pix' ? 'selected' : '' %>>PIX</option>
+                        <option value="cartao"<%= pagamento && pagamento.metodo === 'cartao' ? 'selected' : '' %>>Cartão</option>
+                        <option value="boleto"<%= pagamento && pagamento.metodo === 'boleto' ? 'selected' : '' %>>Boleto</option>
+                        <option value="transferencia"<%= pagamento && pagamento.metodo === 'transferencia' ? 'selected' : '' %>>Transferência</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top:12px">
+                <div class="col">
+                    <label for="nome">Nome do pagador</label>
+                    <input id="nome" name="nome" type="text" required
+                        value="<%= pagamento && pagamento.nome ? pagamento.nome : '' %>">
+                </div>
+
+                <div class="col">
+                    <label for="cpf_cnpj">CPF / CNPJ</label>
+                    <input id="cpf_cnpj" name="cpf_cnpj" type="text"
+                        value="<%= pagamento && pagamento.cpf_cnpj ? pagamento.cpf_cnpj : '' %>">
+                    <div class="help">Somente números. Opcional, dependendo do método.</div>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top:12px">
+                <div class="col">
+                    <label for="email">E‑mail</label>
+                    <input id="email" name="email" type="email"
+                        value="<%= pagamento && pagamento.email ? pagamento.email : '' %>">
+                </div>
+
+                <div class="col">
+                    <label for="telefone">Telefone</label>
+                    <input id="telefone" name="telefone" type="tel"
+                        value="<%= pagamento && pagamento.telefone ? pagamento.telefone : '' %>">
+                </div>
+            </div>
+
+            <div style="margin-top:12px">
+                <label for="descricao">Descrição / Observações</label>
+                <textarea id="descricao" name="descricao"><%= pagamento && pagamento.descricao ? pagamento.descricao : '' %></textarea>
+            </div>
+
+            <div class="row" style="margin-top:12px">
+                <div class="col">
+                    <label for="vencimento">Data de vencimento</label>
+                    <input id="vencimento" name="vencimento" type="date"
+                        value="<%= pagamento && pagamento.vencimento ? pagamento.vencimento : '' %>">
+                </div>
+            </div>
+
+            <div class="actions">
+                <a class="btn btn-secondary" href="/pagamento">Cancelar</a>
+                <button type="submit" class="btn btn-primary">Salvar pagamento</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Validação simples no cliente
+        (function(){
+            var form = document.getElementById('form-pagamento');
+            form.addEventListener('submit', function(e){
+                var valor = parseFloat(document.getElementById('valor').value || 0);
+                if (isNaN(valor) || valor <= 0) {
+                    e.preventDefault();
+                    alert('Informe um valor válido maior que zero.');
+                    return false;
+                }
+                var metodo = document.getElementById('metodo').value;
+                if (!metodo) {
+                    e.preventDefault();
+                    alert('Selecione o método de pagamento.');
+                    return false;
+                }
+            }, false);
+        })();
+    </script>
+</body>
+</html>

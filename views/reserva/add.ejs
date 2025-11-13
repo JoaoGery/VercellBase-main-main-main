@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <title>Nova Reserva de Carro</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <style>
+        body{font-family:Arial,Helvetica,sans-serif;padding:20px}
+        form{max-width:700px}
+        label{display:block;margin-top:12px;font-weight:600}
+        input,select,textarea{width:100%;padding:8px;margin-top:6px;box-sizing:border-box}
+        .row{display:flex;gap:12px}
+        .col{flex:1}
+        .errors{background:#ffe6e6;border:1px solid #ffb3b3;padding:10px;margin-bottom:12px}
+        .actions{margin-top:16px}
+    </style>
+</head>
+<body>
+    <h1>Nova reserva de carro</h1>
+
+    <% if (typeof errors !== 'undefined' && errors && errors.length) { %>
+        <div class="errors">
+            <strong>Corrija os seguintes erros:</strong>
+            <ul>
+                <% errors.forEach(function(err){ %>
+                    <li><%= err.msg || err %></li>
+                <% }) %>
+            </ul>
+        </div>
+    <% } %>
+
+    <form action="/reserva" method="POST" novalidate>
+        <!-- Dados do cliente -->
+        <label for="clienteNome">Nome do cliente</label>
+        <input id="clienteNome" name="clienteNome" required
+            value="<%= typeof reserva !== 'undefined' && reserva.clienteNome ? reserva.clienteNome : '' %>"
+            placeholder="Nome completo">
+
+        <div class="row">
+            <div class="col">
+                <label for="clienteEmail">Email</label>
+                <input id="clienteEmail" name="clienteEmail" type="email"
+                    value="<%= typeof reserva !== 'undefined' && reserva.clienteEmail ? reserva.clienteEmail : '' %>"
+                    placeholder="exemplo@dominio.com">
+            </div>
+            <div class="col">
+                <label for="clienteTelefone">Telefone</label>
+                <input id="clienteTelefone" name="clienteTelefone" placeholder="(XX) XXXXX-XXXX"
+                    value="<%= typeof reserva !== 'undefined' && reserva.clienteTelefone ? reserva.clienteTelefone : '' %>">
+            </div>
+        </div>
+
+        <!-- Seleção do carro -->
+        <label for="carro">Carro</label>
+        <select id="carro" name="carro" required>
+            <option value="">-- selecione um veículo --</option>
+            <% if (typeof carros !== 'undefined' && carros.length) { %>
+                <% carros.forEach(function(c){ %>
+                    <option value="<%= c.id %>" <%= (typeof reserva !== 'undefined' && reserva.carro == c.id) ? 'selected' : '' %>>
+                        <%= c.marca %> - <%= c.modelo %> (<%= c.ano %>)
+                    </option>
+                <% }) %>
+            <% } else { %>
+                <!-- opções fixas como fallback -->
+                <option value="economico">Econômico</option>
+                <option value="sedan">Sedan</option>
+                <option value="suv">SUV</option>
+            <% } %>
+        </select>
+
+        <!-- Datas e locais -->
+        <div class="row">
+            <div class="col">
+                <label for="retirada">Data/Hora de retirada</label>
+                <input id="retirada" name="retirada" type="datetime-local" required
+                    value="<%= typeof reserva !== 'undefined' && reserva.retirada ? reserva.retirada : '' %>">
+            </div>
+            <div class="col">
+                <label for="devolucao">Data/Hora de devolução</label>
+                <input id="devolucao" name="devolucao" type="datetime-local" required
+                    value="<%= typeof reserva !== 'undefined' && reserva.devolucao ? reserva.devolucao : '' %>">
+            </div>
+        </div>
+
+        <label for="localRetirada">Local de retirada</label>
+        <input id="localRetirada" name="localRetirada"
+            value="<%= typeof reserva !== 'undefined' && reserva.localRetirada ? reserva.localRetirada : '' %>"
+            placeholder="Endereço ou agência">
+
+        <!-- Pagamento e preço -->
+        <div class="row">
+            <div class="col">
+                <label for="pagamento">Forma de pagamento</label>
+                <select id="pagamento" name="pagamento">
+                    <option value="cartao" <%= (reserva && reserva.pagamento==='cartao') ? 'selected' : '' %>>Cartão</option>
+                    <option value="dinheiro" <%= (reserva && reserva.pagamento==='dinheiro') ? 'selected' : '' %>>Dinheiro</option>
+                    <option value="transferencia" <%= (reserva && reserva.pagamento==='transferencia') ? 'selected' : '' %>>Transferência</option>
+                </select>
+            </div>
+            <div class="col">
+                <label for="preco">Preço (R$)</label>
+                <input id="preco" name="preco" type="number" step="0.01" min="0"
+                    value="<%= typeof reserva !== 'undefined' && reserva.preco ? reserva.preco : '' %>">
+            </div>
+        </div>
+
+        <label for="observacoes">Observações</label>
+        <textarea id="observacoes" name="observacoes" rows="4" placeholder="Informações adicionais"><%= typeof reserva !== 'undefined' && reserva.observacoes ? reserva.observacoes : '' %></textarea>
+
+        <div class="actions">
+            <button type="submit">Criar reserva</button>
+            <a href="/reservas" style="margin-left:12px">Cancelar</a>
+        </div>
+    </form>
+</body>
+</html>

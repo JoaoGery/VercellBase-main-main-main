@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Pagamentos — Lista</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container py-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1 class="h4 mb-0">Pagamentos</h1>
+            <div>
+                <a href="/pagamento/novo" class="btn btn-primary">Novo pagamento</a>
+                <a href="/pagamento/imprimir" class="btn btn-outline-secondary ms-2" target="_blank">Imprimir</a>
+            </div>
+        </div>
+
+        <% if (typeof success !== 'undefined' && success) { %>
+            <div class="alert alert-success"><%= success %></div>
+        <% } %>
+        <% if (typeof error !== 'undefined' && error) { %>
+            <div class="alert alert-danger"><%= error %></div>
+        <% } %>
+
+        <form method="GET" class="row g-2 mb-3" role="search" action="/pagamento">
+            <div class="col-auto">
+                <input type="search" name="q" class="form-control" placeholder="Pesquisar por descrição, id ou status" value="<%= typeof q !== 'undefined' ? q : '' %>">
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-outline-primary">Pesquisar</button>
+            </div>
+            <div class="col-auto">
+                <a href="/pagamento" class="btn btn-outline-secondary">Limpar</a>
+            </div>
+        </form>
+
+        <div class="card">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Descrição</th>
+                            <th scope="col">Valor</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Data</th>
+                            <th scope="col" class="text-end">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (Array.isArray(pagamentos) && pagamentos.length) { %>
+                            <% pagamentos.forEach(function(p) { %>
+                                <tr>
+                                    <td><%= p.id %></td>
+                                    <td><%= p.descricao %></td>
+                                    <td>R$ <%= (Number(p.valor) || 0).toFixed(2).replace('.', ',') %></td>
+                                    <td>
+                                        <% if (p.status === 'pago') { %>
+                                            <span class="badge bg-success">Pago</span>
+                                        <% } else if (p.status === 'pendente') { %>
+                                            <span class="badge bg-warning text-dark">Pendente</span>
+                                        <% } else { %>
+                                            <span class="badge bg-secondary"><%= p.status || '—' %></span>
+                                        <% } %>
+                                    </td>
+                                    <td><%= p.data ? new Date(p.data).toLocaleDateString('pt-BR') : '—' %></td>
+                                    <td class="text-end">
+                                        <a href="/pagamento/visualizar/<%= p.id %>" class="btn btn-sm btn-outline-primary">Ver</a>
+                                        <a href="/pagamento/editar/<%= p.id %>" class="btn btn-sm btn-outline-secondary ms-1">Editar</a>
+                                        <form action="/pagamento/excluir/<%= p.id %>" method="POST" class="d-inline" onsubmit="return confirm('Confirma exclusão deste pagamento?');">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger ms-1">Excluir</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="6" class="text-center py-4 text-muted">Nenhum pagamento encontrado.</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer d-flex justify-content-between align-items-center">
+                <small class="text-muted">Total: <strong><%= Array.isArray(pagamentos) ? pagamentos.length : 0 %></strong></small>
+                <% if (typeof page !== 'undefined' && typeof totalPages !== 'undefined') { %>
+                    <nav>
+                        <ul class="pagination mb-0">
+                            <li class="page-item <%= page <= 1 ? 'disabled' : '' %>">
+                                <a class="page-link" href="?q=<%= encodeURIComponent(q || '') %>&page=<%= page - 1 %>">Anterior</a>
+                            </li>
+                            <% for (let i = 1; i <= totalPages; i++) { %>
+                                <li class="page-item <%= page === i ? 'active' : '' %>">
+                                    <a class="page-link" href="?q=<%= encodeURIComponent(q || '') %>&page=<%= i %>"><%= i %></a>
+                                </li>
+                            <% } %>
+                            <li class="page-item <%= page >= totalPages ? 'disabled' : '' %>">
+                                <a class="page-link" href="?q=<%= encodeURIComponent(q || '') %>&page=<%= page + 1 %>">Próxima</a>
+                            </li>
+                        </ul>
+                    </nav>
+                <% } %>
+            </div>
+        </div>
+
+        <footer class="mt-4 text-muted small">
+            Desenvolvido — lista de pagamentos (pt-BR)
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html></li></ul>
