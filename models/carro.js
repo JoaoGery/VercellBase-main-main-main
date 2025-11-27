@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+
 const CarroSchema = new mongoose.Schema({
   placa: { type: String, required: true, unique: true },
   modelo: { type: String, required: true },
@@ -11,10 +12,8 @@ const CarroSchema = new mongoose.Schema({
       message: 'Ano deve ser entre 1886 e o ano atual'
     }
   },
-  diaria: { type: Number, required: true },
-  disponivel: { type: Boolean, default: true },
-  imagem: { type: Buffer },       // armazena imagem no MongoDB
-  imagemTipo: { type: String }    // ex: 'image/jpeg'
+  imagem: { type: Buffer },       
+  imagemTipo: { type: String }   
 }, { timestamps: true });
 
 export default mongoose.model('Carro', CarroSchema);

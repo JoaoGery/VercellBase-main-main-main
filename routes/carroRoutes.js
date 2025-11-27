@@ -1,85 +1,57 @@
 import express from 'express';
-import * as ctrl from '../controllers/carro.js';
+import multer from 'multer';
 import Carro from '../models/carro.js';
 
 const router = express.Router();
+const upload = multer({ storage: multer.memoryStorage() });
 
-// ✅ LISTAR CARROS
+// LISTAR
 router.get('/', async (req, res) => {
-  try {
-    const carros = await Carro.find();
-    res.render('carro/lst', { carros, success: null, error: null });
-  } catch (error) {
-    console.error(error);
-    res.render('carro/lst', { carros: [], success: null, error: 'Erro ao carregar lista de carros' });
+  const carros = await Carro.find();
+  res.json(carros);
+});
+
+// CRIAR
+router.post('/', upload.single('imagem'), async (req, res) => {
+  const carro = new Carro({
+    marca: req.body.marca,
+    modelo: req.body.modelo,
+    ano: req.body.ano,
+    placa: req.body.placa
+  });
+
+  if (req.file) {
+    carro.imagem = req.file.buffer;
+    carro.imagemTipo = req.file.mimetype;
   }
+
+  await carro.save();
+  res.json(carro);
 });
 
-// ✅ FORMULÁRIO DE ADIÇÃO
-router.get('/add', (req, res) => {
-  res.render('carro/add', { carro: {}, errors: [] });
-});
+// EDITAR
+router.put('/:id', upload.single('imagem'), async (req, res) => {
+  const carro = await Carro.findById(req.params.id);
+  if (!carro) return res.status(404).json({ error: 'Carro não encontrado' });
 
-// ✅ SALVAR NOVO CARRO
-router.post('/add', async (req, res) => {
-  try {
-    const novoCarro = new Carro({
-      marca: req.body.marca,
-      modelo: req.body.modelo,
-      placa: req.body.placa,
-      ano: req.body.ano,
-      diaria: req.body.diaria,
-      imagem: req.body.imagem || null, // apenas string opcional
-    });
+  carro.marca = req.body.marca;
+  carro.modelo = req.body.modelo;
+  carro.ano = req.body.ano;
+  carro.placa = req.body.placa;
 
-    await novoCarro.save();
-    res.redirect('/carro');
-  } catch (error) {
-    console.error(error);
-    res.render('carro/add', {
-      carro: req.body,
-      errors: [{ msg: 'Erro ao salvar carro. Verifique os campos obrigatórios.' }],
-    });
+  if (req.file) {
+    carro.imagem = req.file.buffer;
+    carro.imagemTipo = req.file.mimetype;
   }
+
+  await carro.save();
+  res.json(carro);
 });
 
-// ✅ FORMULÁRIO DE EDIÇÃO
-router.get('/:id/editar', async (req, res) => {
-  try {
-    const carro = await Carro.findById(req.params.id);
-    if (!carro) {
-      return res.redirect('/carro');
-    }
-    res.render('carro/edt', { carro, errors: [] });
-  } catch (error) {
-    console.error(error);
-    res.redirect('/carro');
-  }
+// DELETAR
+router.delete('/:id', async (req, res) => {
+  await Carro.findByIdAndDelete(req.params.id);
+  res.json({ ok: true });
 });
-
-// ✅ ATUALIZAR CARRO
-router.post('/:id', async (req, res) => {
-  try {
-    await Carro.findByIdAndUpdate(req.params.id, req.body);
-    res.redirect('/carro');
-  } catch (error) {
-    console.error(error);
-    res.render('carro/edt', { carro: req.body, errors: [{ msg: 'Erro ao atualizar carro.' }] });
-  }
-});
-
-// ✅ EXCLUIR CARRO
-router.post('/:id/delete', async (req, res) => {
-  try {
-    await Carro.findByIdAndDelete(req.params.id);
-    res.redirect('/carro');
-  } catch (error) {
-    console.error(error);
-    res.render('carro/lst', { carros: [], success: null, error: 'Erro ao excluir carro' });
-  }
-});
-
-// rota de busca: /carros/search?q=xxx
-router.get('/search', ctrl.search);
 
 export default router;

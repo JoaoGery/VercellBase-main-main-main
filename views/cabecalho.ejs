@@ -244,14 +244,31 @@ function showSection(id){
   document.getElementById(id).classList.add('active');
 }
 
-let carros=[], clientes=[], reservas=[], pagamentos=[];
+let carros = [];
+let clientes = [];
+let reservas = [];
+let pagamentos = [];
+
+let editandoId = null; // ← controla edição
 
 const carroList=document.getElementById("carro-list");
-const clienteList=document.getElementById("cliente-list");
-const reservaList=document.getElementById("reserva-list");
-const pagamentoList=document.getElementById("pagamento-list");
 
-document.querySelector('input[name="foto"]').addEventListener('change',function(e){
+/* ================================
+      1) CARREGAR CARROS DA API
+================================ */
+async function carregarCarros() {
+  const res = await fetch('/api/carros');
+  carros = await res.json();
+  atualizarTabelaCarros();
+  atualizarSelects();
+}
+
+carregarCarros();
+
+/* ================================
+      2) PREVIEW DA IMAGEM
+================================ */
+document.querySelector('input[name="foto"]').addEventListener('change', function(e){
   const img=document.getElementById('preview');
   const file=e.target.files[0];
   if(file){
@@ -261,97 +278,127 @@ document.querySelector('input[name="foto"]').addEventListener('change',function(
   }
 });
 
-// ======= CARROS =======
-document.getElementById("carro-form").addEventListener("submit",e=>{
+/* ================================
+      3) ADICIONAR OU EDITAR CARRO
+================================ */
+document.getElementById("carro-form").addEventListener("submit", async e => {
   e.preventDefault();
-  const fotoInput=e.target.foto.files[0];
-  const reader=new FileReader();
-  reader.onload=()=>{
-    carros.push({marca:e.target.marca.value,modelo:e.target.modelo.value,ano:e.target.ano.value,placa:e.target.placa.value,foto:reader.result});
-    e.target.reset();document.getElementById("preview").style.display='none';
-    atualizarTabelaCarros(); atualizarSelects();
-  };
-  if(fotoInput) reader.readAsDataURL(fotoInput);
-  else {carros.push({marca:e.target.marca.value,modelo:e.target.modelo.value,ano:e.target.ano.value,placa:e.target.placa.value,foto:''});atualizarTabelaCarros();atualizarSelects();}
+
+  const formData = new FormData();
+  formData.append("marca", e.target.marca.value);
+  formData.append("modelo", e.target.modelo.value);
+  formData.append("ano", e.target.ano.value);
+  formData.append("placa", e.target.placa.value);
+
+  if (e.target.foto.files[0]) {
+    formData.append("imagem", e.target.foto.files[0]);
+  }
+
+  let res;
+  let novoCarro;
+
+  // ============================
+  //      MODO EDITAR
+  // ============================
+  if (editandoId) {
+    res = await fetch(`/api/carros/${editandoId}`, {
+      method: "PUT",
+      body: formData
+    });
+
+    novoCarro = await res.json();
+
+    // atualizar no array
+    carros = carros.map(c => c._id === editandoId ? novoCarro : c);
+
+    editandoId = null;
+    e.target.querySelector("button").innerText = "Adicionar Carro";
+
+  } else {
+
+    // ============================
+    //      MODO ADICIONAR
+    // ============================
+    res = await fetch('/api/carros', {
+      method: "POST",
+      body: formData
+    });
+
+    novoCarro = await res.json();
+    carros.push(novoCarro);
+  }
+
+  atualizarTabelaCarros();
+  atualizarSelects();
+
+  e.target.reset();
+  document.getElementById("preview").style.display = 'none';
 });
 
+/* ================================
+      4) LISTAR CARROS
+================================ */
 function atualizarTabelaCarros(){
-  const filtro=document.getElementById('pesquisar-carro')?.value?.toLowerCase()||'';
-  carroList.innerHTML=carros.filter(c=>Object.values(c).some(v=>v.toString().toLowerCase().includes(filtro)))
-  .map((c,i)=>`<tr>
-    <td>${c.foto?`<img src="${c.foto}">`:'—'}</td>
-    <td>${c.marca}</td><td>${c.modelo}</td><td>${c.ano}</td><td>${c.placa}</td>
-    <td><button class="btn-small btn-edit" onclick="editarCarro(${i})">Editar</button><button class="btn-small btn-delete" onclick="removerCarro(${i})">Excluir</button></td>
-  </tr>`).join('');
+  carroList.innerHTML = carros.map(c => `
+    <tr>
+      <td>${c.imagem ? `<img src="/api/carros/${c._id}/imagem">` : '—'}</td>
+      <td>${c.marca}</td>
+      <td>${c.modelo}</td>
+      <td>${c.ano}</td>
+      <td>${c.placa}</td>
+      <td>
+        <button class="btn-small btn-edit" onclick="editarCarro('${c._id}')">Editar</button>
+        <button class="btn-small btn-delete" onclick="removerCarro('${c._id}')">Excluir</button>
+      </td>
+    </tr>
+  `).join('');
 }
 
-document.getElementById('pesquisar-carro').addEventListener('input',atualizarTabelaCarros);
+/* ================================
+      5) PREPARAR FORM PARA EDITAR
+================================ */
+window.editarCarro = function(id) {
+  const c = carros.find(x => x._id === id);
 
-function removerCarro(i){carros.splice(i,1);atualizarTabelaCarros();atualizarSelects();}
-function editarCarro(i){
-  const c=carros[i];
-  const f=document.getElementById("carro-form");
-  f.marca.value=c.marca;f.modelo.value=c.modelo;f.ano.value=c.ano;f.placa.value=c.placa;
-  carros.splice(i,1);
+  editandoId = id;
+
+  const form = document.getElementById("carro-form");
+
+  form.marca.value = c.marca;
+  form.modelo.value = c.modelo;
+  form.ano.value = c.ano;
+  form.placa.value = c.placa;
+
+  document.getElementById("preview").src = c.imagem ? `/api/carros/${id}/imagem` : "";
+  document.getElementById("preview").style.display = c.imagem ? "block" : "none";
+
+  form.querySelector("button").innerText = "Salvar Alterações";
+
+  showSection("carros");
+}
+
+/* ================================
+      6) EXCLUIR CARRO
+================================ */
+window.removerCarro = async function(id) {
+  await fetch(`/api/carros/${id}`, { method: 'DELETE' });
+  carros = carros.filter(c => c._id !== id);
   atualizarTabelaCarros();
   atualizarSelects();
 }
 
-// ======= CLIENTES =======
-document.getElementById("cliente-form").addEventListener("submit",e=>{
-  e.preventDefault();
-  clientes.push({nome:e.target.nome.value,email:e.target.email.value,telefone:e.target.telefone.value});
-  e.target.reset();render(clientes,clienteList,['nome','email','telefone'],'cliente');atualizarSelects();
-});
-
-// ======= RESERVAS =======
-document.getElementById("reserva-form").addEventListener("submit",e=>{
-  e.preventDefault();
-  reservas.push({carro:e.target.carro.value,cliente:e.target.cliente.value,inicio:e.target.inicio.value,fim:e.target.fim.value});
-  e.target.reset();render(reservas,reservaList,['carro','cliente','inicio','fim'],'reserva');atualizarSelects();
-});
-
-// ======= PAGAMENTOS =======
-document.getElementById("pagamento-form").addEventListener("submit",e=>{
-  e.preventDefault();
-  const valorStr=e.target.valor.value.replace(',','.');
-  pagamentos.push({reserva:e.target.reserva.value,valor:parseFloat(valorStr).toFixed(2).replace('.',','),data:e.target.data.value});
-  e.target.reset();render(pagamentos,pagamentoList,['reserva','valor','data'],'pagamento');
-});
-
-function render(arr,tabela,campos,tipo){
-  tabela.innerHTML=arr.map((o,i)=>`<tr>
-    ${campos.map(c=>`<td>${o[c]}</td>`).join('')}
-    <td><button class="btn-small btn-edit" onclick="editar('${tipo}',${i})">Editar</button><button class="btn-small btn-delete" onclick="remover('${tipo}',${i})">Excluir</button></td>
-  </tr>`).join('');
-}
-
+/* ================================
+      7) SELECTS EM RESERVAS
+================================ */
 function atualizarSelects(){
   const carroSel=document.querySelector('#reserva-form select[name="carro"]');
   carroSel.innerHTML=carros.map(c=>`<option>${c.marca} ${c.modelo} (${c.placa})</option>`).join('');
-  const clienteSel=document.querySelector('#reserva-form select[name="cliente"]');
-  clienteSel.innerHTML=clientes.map(c=>`<option>${c.nome}</option>`).join('');
-  const reservaSel=document.querySelector('#pagamento-form select[name="reserva"]');
-  reservaSel.innerHTML=reservas.map((r,i)=>`<option>Reserva ${i+1}: ${r.carro} - ${r.cliente}</option>`).join('');
 }
 
-window.remover=(tipo,i)=>{
-  if(tipo==='cliente'){clientes.splice(i,1);render(clientes,clienteList,['nome','email','telefone'],'cliente');}
-  if(tipo==='reserva'){reservas.splice(i,1);render(reservas,reservaList,['carro','cliente','inicio','fim'],'reserva');atualizarSelects();}
-  if(tipo==='pagamento'){pagamentos.splice(i,1);render(pagamentos,pagamentoList,['reserva','valor','data'],'pagamento');}
-};
-
-window.editar=(tipo,i)=>{
-  let item,form,arr,campos;
-  if(tipo==='cliente'){item=clientes[i];form=document.getElementById('cliente-form');arr=clientes;campos=['nome','email','telefone'];}
-  if(tipo==='reserva'){item=reservas[i];form=document.getElementById('reserva-form');arr=reservas;campos=['carro','cliente','inicio','fim'];}
-  if(tipo==='pagamento'){item=pagamentos[i];form=document.getElementById('pagamento-form');arr=pagamentos;campos=['reserva','valor','data'];}
-  campos.forEach(c=>form[c].value=item[c]);
-  arr.splice(i,1);
-};
 </script>
-</body>
-</html>
+
+
+
 
 
 

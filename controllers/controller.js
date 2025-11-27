@@ -6,9 +6,8 @@
           res.render('index')
         };
 
-        this.teste = async (req, res) => {
-          const resultado = "teste";
-          res.render('index2',{teste: resultado});
+        this.homesite= async (req, res) => {
+          res.render('site/index');
         };
 
         this.formulario = async (req, res) => {
