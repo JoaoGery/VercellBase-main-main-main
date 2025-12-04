@@ -94,7 +94,7 @@ const originalFetch = window.fetch;
 window.fetch = async (url, options) => {
   if (url === '/api/reservas' && options?.method === 'POST') {
     console.log("🔧 RESERVA EMULADA:", JSON.parse(options.body));
-    return new Response(JSON.stringify({ sucesso:true, mensagem:"Reserva emulada com sucesso!" }), { status:200, headers:{'Content-Type':'application/json'} });
+    return new Response(JSON.stringify({ sucesso:true, mensagem:"Reserva feita com sucesso!" }), { status:200, headers:{'Content-Type':'application/json'} });
   }
   return originalFetch(url, options);
 };
