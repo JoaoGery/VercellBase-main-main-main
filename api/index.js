@@ -15,11 +15,6 @@ import authRouter from '../routes/auth.js';
 
 const app = express();
 
-// 🔗 Conexão com MongoDB
-const mongoUrl = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/aluguel_carros';
-mongoose.connect(mongoUrl)
-  .then(() => console.log('✅ MongoDB conectado'))
-  .catch(err => console.error('❌ Erro MongoDB:', err));
 
 // Middleware para ler body do formulário
 app.use(express.urlencoded({ extended: true }));
