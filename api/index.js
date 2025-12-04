@@ -1,4 +1,3 @@
-import { createServer } from 'http';
 import express from 'express';
 import mongoose from 'mongoose';
 import { fileURLToPath } from 'url';
@@ -9,7 +8,10 @@ import carroRouter from '../routes/carroRoutes.js';
 import clienteRouter from '../routes/clienteRoutes.js';
 import reservaRouter from '../routes/reservaRoutes.js';
 import pagamentoRouter from '../routes/pagamentoRoutes.js';
+import routeRouter from '../routes/route.js';
+import carroApiroutes from '../routes/carroApiroutes.js';
 import authRouter from '../routes/auth.js';
+
 
 const app = express();
 
@@ -46,16 +48,21 @@ app.use((req, res, next) => {
 });
 
 // Rotas principais
+// SITE DO USUÁRIO
+app.use('/site', express.static('site'));
+
+// Rotas principais
 app.use('/carro', carroRouter);
 app.use('/cliente', clienteRouter);
 app.use('/reserva', reservaRouter);
 app.use('/pagamento', pagamentoRouter);
 app.use('/auth', authRouter);
+app.use('/api/carros', carroApiroutes);
 
-// Rota raiz (dashboard único)
-app.get('/', (req, res) => {
-  res.render('cabecalho');
-});
+// Rota raiz
+app.use('/', routeRouter);
+
+
 
 // 🚀 Servidor
 const port = process.env.PORT || 3001;
