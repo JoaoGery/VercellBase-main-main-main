@@ -394,6 +394,17 @@ function atualizarSelects(){
   const carroSel=document.querySelector('#reserva-form select[name="carro"]');
   carroSel.innerHTML=carros.map(c=>`<option>${c.marca} ${c.modelo} (${c.placa})</option>`).join('');
 }
+// ================================
+//   ATUALIZAÇÃO AUTOMÁTICA DO ADMIN
+// ================================
+
+setInterval(() => {
+  if (typeof carregarCarros === "function") carregarCarros();
+  if (typeof carregarClientes === "function") carregarClientes();
+  if (typeof carregarReservas === "function") carregarReservas();
+  if (typeof carregarPagamentos === "function") carregarPagamentos();
+}, 3000); // a cada 3 segundos
+
 
 </script>
 
